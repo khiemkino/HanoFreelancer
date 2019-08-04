@@ -16,6 +16,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.GRAY,
     height: scale(1)
   },
+  rowImage: {
+    marginTop: height(2),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center'
+  },
+  imgFullPic: {
+    height: width(40),
+    width: width(40),
+    resizeMode: 'contain'
+  },
   coreStyle: {
     height: heightNavBar,
     width: width(94),

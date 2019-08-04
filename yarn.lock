@@ -845,6 +845,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.6.1.tgz#19be07fc1d65c77bdeb20f46108ba12076aad1c5"
   integrity sha512-1WA28xfdhG+unkTEk/lXnqI2izv6belo0CYw7UdvaeHm8TIYT6eTmIIdGR7oiCa2xSKEnaPQqRMH6h7gyLNbww==
 
+"@react-native-community/cameraroll@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cameraroll/-/cameraroll-1.1.1.tgz#656b831c331b29c0f1f32137485310b38d2aa098"
+  integrity sha512-cvJewReV2l65exdsccveqnqXHGFuTgwdbjr+0MASxq6zQ+eeHLx9g/wYk8YrXHWXJqf5B/jZnNDpcg/y23atmw==
+
 "@react-native-community/cli-platform-android@^2.0.1", "@react-native-community/cli-platform-android@^2.8.3":
   version "2.8.3"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-android/-/cli-platform-android-2.8.3.tgz#097237769d69400ceaf254a780d645bb8284acd6"
@@ -5332,6 +5337,16 @@ react-native-camera@^3.0.1:
   integrity sha512-d84vPWMSN1cOnpz2qNiOlcpQFhxBQmDpl4JZPweu4v0nmonDcfm0t+DWgYqMezZQ+u/oyNLTCjdu9D+mKSkPfA==
   dependencies:
     prop-types "^15.6.2"
+
+react-native-exif@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-exif/-/react-native-exif-0.4.0.tgz#70f7230e5eae2a2dfc1623b01c419d81a95620f3"
+  integrity sha512-86e4fUn2S5yW20wo/yUAzhwZZ3czHk1rJyAsVD36jcB//gxb0DQBYVNmGLowXqo83Z48AsdHua2moHyIRJKDew==
+
+react-native-image-picker@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-1.0.2.tgz#8b0ffe89d7dd97bef1f7e317f313f90549b126b3"
+  integrity sha512-+xwfqOQz5lU6mO6YUWdp7cb1a8V9hOqh4joI6YoRRyWp2stQ5P7m6x3f6w9j1r29f5mK67kqmM5gOfweTqzDaA==
 
 react-native-permissions@^1.2.0:
   version "1.2.0"

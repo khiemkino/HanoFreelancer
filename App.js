@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react'
-import { CameraRoll, View, TouchableOpacity, Text, FlatList, Image } from 'react-native'
+import { View, TouchableOpacity, Text, FlatList, Image } from 'react-native'
 import styles from './styles'
 import { Icon } from './Icon'
 import * as Animatable from 'react-native-animatable'
 import { width, Colors } from './globalStyles'
 import { IconType } from './constants'
 import Permissions from 'react-native-permissions'
+import Exif from 'react-native-exif'
+import ImagePicker from 'react-native-image-picker'
+import CameraRoll from '@react-native-community/cameraroll'
 
 const TouchableOpacityAnim = Animatable.createAnimatableComponent(TouchableOpacity)
 class PickerPhoto extends PureComponent {
@@ -15,7 +18,8 @@ class PickerPhoto extends PureComponent {
       arrPhoto: [],
       arrTakePhoto: [],
       arrSelectPhoto: [],
-      numImage: 20
+      numImage: 20,
+      exifInfo: null
     }
   }
 
@@ -47,6 +51,7 @@ class PickerPhoto extends PureComponent {
       }
 
       CameraRoll.getPhotos(option).then(r => {
+        console.log(r)
         resolve(r.edges)
       }).catch(() => {
         resolve([])
@@ -54,17 +59,31 @@ class PickerPhoto extends PureComponent {
     })
   }
 
-  selectPhoto = (photo, isSelect) => () => {
-    const { limit } = this.props
-    const { arrSelectPhoto } = this.state
-    const newArr = arrSelectPhoto.slice()
+  selectPhoto = (photo, isSelect) => async () => {
+    try {
+      const { arrSelectPhoto } = this.state
+      let newArr = arrSelectPhoto.slice()
+      if (isSelect) {
+        newArr.splice(newArr.indexOf(photo), 1)
+      } else {
+        newArr = [photo]
+      }
 
-    isSelect
-      ? newArr.splice(newArr.indexOf(photo), 1)
-      : newArr.push(photo)
+      let linkImage = photo
+      if (!photo.includes('file://')) {
+        var regex = /:\/\/(.{36})\//i
+        var result = photo.match(regex)
+        linkImage = 'assets-library://asset/asset.JPG?id=' + result[1] + '&ext=JPG'
+      }
+      const exifInfo = await Exif.getExif(linkImage)
 
-    if (!limit || newArr.length <= limit) {
-      this.setState({ arrSelectPhoto: newArr })
+      this.setState({ arrSelectPhoto: newArr,
+        exifInfo: {
+          uri: photo,
+          info: exifInfo
+        } })
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -85,9 +104,46 @@ class PickerPhoto extends PureComponent {
     const responseImage = await this.selectImagePicker(true)
     if (responseImage) {
       const arrNew = this.state.arrTakePhoto.slice()
+
       arrNew.push({ node: { image: { uri: responseImage.response.uri } } })
       this.setState({ arrTakePhoto: arrNew })
     }
+  }
+
+  selectImagePicker= (isOpenCamera) => {
+    return new Promise((resolve, reject) => {
+      const options = {
+        title: 'Choose Image',
+        cancelButtonTitle: 'Close',
+        takePhotoButtonTitle: 'Take Photo',
+        chooseFromLibraryButtonTitle: 'Choose library',
+        noData: true,
+        quality: 1.0,
+        maxWidth: 1500,
+        maxHeight: 1500,
+        storageOptions: {
+          cameraRoll: true,
+          waitUntilSaved: true,
+          skipBackup: true
+        }
+      }
+
+      ImagePicker[isOpenCamera ? 'launchCamera' : 'showImagePicker'](options, (response) => {
+        if (response.didCancel) {
+          resolve()
+        } else if (response.error) {
+          if (response.error === 'Photo library permissions not granted') {
+            Permissions.openSettings()
+          }
+          resolve()
+        } else if (response.uri) {
+          resolve({
+            link: response.uri,
+            response
+          })
+        }
+      })
+    })
   }
 
   renderPhoto = ({ item, index }) => {
@@ -125,8 +181,9 @@ class PickerPhoto extends PureComponent {
   }
 
   render () {
-    const { closeModal } = this.props
-    const { arrPhoto, arrSelectPhoto, arrTakePhoto } = this.state
+    const { arrPhoto, arrSelectPhoto, arrTakePhoto, exifInfo } = this.state
+
+    console.log(exifInfo)
     return (
       <View style={styles.modalContainer}>
         <View style={[styles.container, styles.coreStyle]}>
@@ -134,6 +191,26 @@ class PickerPhoto extends PureComponent {
             <Text numberOfLines={1} style={styles.txtTitle}>{'Gallery Image'}</Text>
           </View>
         </View>
+        {
+          exifInfo
+            ? <View style={styles.rowImage}>
+              <Image
+                style={styles.imgFullPic}
+                source={{ uri: exifInfo.uri }}
+              />
+              <View>
+                <Text>{'Image Height: ' + exifInfo.info.ImageHeight}</Text>
+                <Text>{'Image Width: ' + exifInfo.info.ImageWidth}</Text>
+                <Text>{'Color Model: ' + exifInfo.info.exif.ColorModel}</Text>
+                <Text>{'Profile Uri: ' + exifInfo.info.exif.originalUri}</Text>
+                <Text>{'Profile Name: ' + exifInfo.info.exif.originalUri}</Text>
+                <Text>{'Image DPI: ' + exifInfo.info.exif.DPIHeight + 'H - ' + exifInfo.info.exif.DPIWidth + 'W'}</Text>
+              </View>
+            </View>
+
+            : null
+        }
+
         <View style={styles.containerList}>
           <View style={styles.grayLine} />
           <FlatList

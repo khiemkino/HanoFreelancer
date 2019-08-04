@@ -50,7 +50,7 @@ export const Colors = {
 }
 
 export const txtDefault = {
-  color: Colors.TEXT,
+  color: 'white',
   fontSize: width(4),
   backgroundColor: 'transparent'
 }
