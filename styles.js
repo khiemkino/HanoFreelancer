@@ -16,6 +16,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.GRAY,
     height: scale(1)
   },
+  rightView: {
+    maxHeight: height(40),
+    width: width(60),
+    borderWidth: scale(1),
+    borderColor: 'white',
+    padding: width(2)
+  },
   rowImage: {
     marginTop: height(2),
     flexDirection: 'row',

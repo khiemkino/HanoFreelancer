@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, TouchableOpacity, Text, FlatList, Image } from 'react-native'
+import { View, TouchableOpacity, Clipboard, Text, FlatList, Image } from 'react-native'
 import styles from './styles'
 import { Icon } from './Icon'
 import * as Animatable from 'react-native-animatable'
@@ -9,12 +9,16 @@ import Permissions from 'react-native-permissions'
 import Exif from 'react-native-exif'
 import ImagePicker from 'react-native-image-picker'
 import CameraRoll from '@react-native-community/cameraroll'
+import RNIM from 'react-native-image-metedata'
+import ImageResizer from 'react-native-image-resizer'
+import Geolocation from '@react-native-community/geolocation'
 
 const TouchableOpacityAnim = Animatable.createAnimatableComponent(TouchableOpacity)
 class PickerPhoto extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
+      isLoading: false,
       arrPhoto: [],
       arrTakePhoto: [],
       arrSelectPhoto: [],
@@ -24,6 +28,7 @@ class PickerPhoto extends PureComponent {
   }
 
   async componentDidMount () {
+    Geolocation.requestAuthorization()
     this.getImagePicker()
     Permissions.check('photo').then(async (response) => {
       if (response === 'authorized') {
@@ -59,6 +64,16 @@ class PickerPhoto extends PureComponent {
     })
   }
 
+  getCurrentPosition = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        (position) => resolve(position),
+        () => resolve(null),
+        { enableHighAccuracy: false, timeout: 8000, maximumAge: 10000 }
+      )
+    })
+  }
+
   selectPhoto = (photo, isSelect) => async () => {
     try {
       const { arrSelectPhoto } = this.state
@@ -76,19 +91,85 @@ class PickerPhoto extends PureComponent {
         linkImage = 'assets-library://asset/asset.JPG?id=' + result[1] + '&ext=JPG'
       }
       const exifInfo = await Exif.getExif(linkImage)
+      console.log(linkImage)
 
-      this.setState({ arrSelectPhoto: newArr,
+      this.setState({
+        arrSelectPhoto: newArr,
         exifInfo: {
           uri: photo,
           info: exifInfo
-        } })
+        }
+      })
     } catch (error) {
       console.log(error)
     }
   }
 
   onPressSendImage = () => {
+    const { exifInfo } = this.state
 
+    ImageResizer.createResizedImage(exifInfo.uri, 1024, 768, 'JPEG', 80).then(async (response) => {
+      console.log(response)
+      const currentLocation = await this.getCurrentPosition()
+      const pathImage = response.uri.replace('file://', '')
+
+      RNIM.readMeteData(pathImage).then((metedataInfo) => {
+        console.log(metedataInfo)
+        const newObject = Object.assign({}, metedataInfo)
+
+        newObject['{Exif}'].ImageDescription = 'NguyenKhiem_TestFreelancer'
+        if (currentLocation) {
+          newObject['{Exif}']['GPSLongitude - GPSLatitude'] = currentLocation.coords.latitude + ' - ' + currentLocation.coords.longitude
+        }
+        RNIM.editMeteDataPhotoForiOS(pathImage, newObject).then(async (metedataInfo) => {
+          console.log(metedataInfo)
+          RNIM.readMeteData(pathImage).then((dataNew) => {
+            console.log(dataNew)
+          })
+
+          const linkImage = await this.uploadImage(response.uri)
+          const newObjectData = Object.assign({}, this.state.exifInfo)
+          newObjectData.info.imageURL = linkImage
+          newObjectData.info.exif.ImageDescription = 'NguyenKhiem_TestFreelancer'
+          if (currentLocation) {
+            newObjectData.info.exif['GPSLongitude - GPSLatitude'] = currentLocation.coords.latitude + ' - ' + currentLocation.coords.longitude
+          }
+
+          this.setState(newObjectData)
+        }).catch(err => {
+          console.log(err)
+        })
+      })
+    }).catch((err) => {
+      console.log(err)
+      console.log('error')
+    })
+  }
+
+  uploadImage = (uri) => {
+    return new Promise((resolve, reject) => {
+      var CryptoJS = require('crypto-js')
+      let timestamp = (Date.now() / 1000 | 0).toString()
+      let apiKey = '651256185413159'
+      let Key = 'BJm6iiB7jlQsxQi5nYRSojyIOk4'
+      let cloud = 'fourseason'
+      let hashString = 'timestamp=' + timestamp + Key
+      let signature = CryptoJS.SHA1(hashString).toString()
+      let uploadURL = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload'
+
+      let xhr = new XMLHttpRequest()
+      xhr.open('POST', uploadURL)
+      xhr.onload = () => {
+        const imageFile = JSON.parse(xhr.response)
+        resolve(imageFile.url)
+      }
+      let formdata = new FormData()
+      formdata.append('file', { uri: uri, type: 'image/png', name: 'upload.png' })
+      formdata.append('timestamp', timestamp)
+      formdata.append('api_key', apiKey)
+      formdata.append('signature', signature)
+      xhr.send(formdata)
+    })
   }
 
   onEndReached = async () => {
@@ -110,7 +191,7 @@ class PickerPhoto extends PureComponent {
     }
   }
 
-  selectImagePicker= (isOpenCamera) => {
+  selectImagePicker = (isOpenCamera) => {
     return new Promise((resolve, reject) => {
       const options = {
         title: 'Choose Image',
@@ -176,6 +257,11 @@ class PickerPhoto extends PureComponent {
     }
   }
 
+  onCopyData=() => {
+    Clipboard.setString(JSON.stringify(this.state.exifInfo.info))
+    alert('Copy Data Done')
+  }
+
   onMomentumScrollBegin = () => {
     this.onTriggerScroll = false
   }
@@ -198,14 +284,29 @@ class PickerPhoto extends PureComponent {
                 style={styles.imgFullPic}
                 source={{ uri: exifInfo.uri }}
               />
-              <View>
+              <TouchableOpacity onPress={this.onCopyData} style={styles.rightView}>
+                {
+                  exifInfo.info.imageURL
+                    ? <Text>{'Image URL Cloudinary: ' + exifInfo.info.imageURL}</Text>
+                    : null
+                }
+
+                {
+                  exifInfo.info.exif.ImageDescription
+                    ? <Text>{'ImageDescription: ' + exifInfo.info.exif.ImageDescription}</Text>
+                    : null
+                }
+                {
+                  exifInfo.info.exif['GPSLongitude - GPSLatitude']
+                    ? <Text>{'GPSLongitude - GPSLatitude: ' + exifInfo.info.exif['GPSLongitude - GPSLatitude']}</Text>
+                    : null
+                }
                 <Text>{'Image Height: ' + exifInfo.info.ImageHeight}</Text>
                 <Text>{'Image Width: ' + exifInfo.info.ImageWidth}</Text>
                 <Text>{'Color Model: ' + exifInfo.info.exif.ColorModel}</Text>
-                <Text>{'Profile Uri: ' + exifInfo.info.exif.originalUri}</Text>
                 <Text>{'Profile Name: ' + exifInfo.info.exif.originalUri}</Text>
                 <Text>{'Image DPI: ' + exifInfo.info.exif.DPIHeight + 'H - ' + exifInfo.info.exif.DPIWidth + 'W'}</Text>
-              </View>
+              </TouchableOpacity>
             </View>
 
             : null
@@ -228,7 +329,7 @@ class PickerPhoto extends PureComponent {
         </View>
 
         {
-          arrSelectPhoto.length > 0
+          exifInfo && arrSelectPhoto.length > 0
             ? <TouchableOpacityAnim onPress={this.onPressSendImage} animation={'fadeInUp'} style={styles.btnCtn}>
               <Text style={styles.textBtn}>{'Upload'}</Text>
               <View style={styles.circleBtn}>

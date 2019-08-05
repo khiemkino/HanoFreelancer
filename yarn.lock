@@ -938,6 +938,11 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
+"@react-native-community/geolocation@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/geolocation/-/geolocation-1.4.2.tgz#7228c6d37c2f55017af9c49c2b9ad586d9bcb9f8"
+  integrity sha512-9x9dHDeUXnh2larA4zTT3y/tXPmRnysh5o9fsNbGcnUKPj1BUCIHnGGPxEIDnwP1DNIMP2DN9DmuMHImtTbX6A==
+
 "@types/babel__core@^7.1.0":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.2.tgz#608c74f55928033fce18b99b213c16be4b3d114f"
@@ -1910,6 +1915,11 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     semver "^5.5.0"
     shebang-command "^1.2.0"
     which "^1.2.9"
+
+crypto-js@^3.1.9-1:
+  version "3.1.9-1"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
+  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
 
 cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.8"
@@ -5343,10 +5353,19 @@ react-native-exif@^0.4.0:
   resolved "https://registry.yarnpkg.com/react-native-exif/-/react-native-exif-0.4.0.tgz#70f7230e5eae2a2dfc1623b01c419d81a95620f3"
   integrity sha512-86e4fUn2S5yW20wo/yUAzhwZZ3czHk1rJyAsVD36jcB//gxb0DQBYVNmGLowXqo83Z48AsdHua2moHyIRJKDew==
 
+"react-native-image-metedata@https://github.com/khiemkino/react-native-image-metedata":
+  version "1.0.2"
+  resolved "https://github.com/khiemkino/react-native-image-metedata#d30e53a58373cc55901a12625100e60a66e40f10"
+
 react-native-image-picker@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-1.0.2.tgz#8b0ffe89d7dd97bef1f7e317f313f90549b126b3"
   integrity sha512-+xwfqOQz5lU6mO6YUWdp7cb1a8V9hOqh4joI6YoRRyWp2stQ5P7m6x3f6w9j1r29f5mK67kqmM5gOfweTqzDaA==
+
+react-native-image-resizer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-resizer/-/react-native-image-resizer-1.0.1.tgz#e9eeb7f81596ffc490f822897952b046c07ee95c"
+  integrity sha512-upBF/9TIs4twg19dSkSaDW/MzMpNbysEXtPuapu3GqvOuGIYHKQ30v6httDn7rIb6uCcNIWL1BwZJM2cDt/C9Q==
 
 react-native-permissions@^1.2.0:
   version "1.2.0"

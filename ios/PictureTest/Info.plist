@@ -41,8 +41,6 @@
 	<string>Please accept camera permission to scan QR code</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Picture would like to Access your FaceID Usage</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>RealEstate need to access your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Some description</string>
 	<key>NSMicrophoneUsageDescription</key>

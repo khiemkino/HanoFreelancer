@@ -13,5 +13,5 @@ Text.defaultProps.allowFontScaling = false
 TextInput.defaultProps.allowFontScaling = false
 setDefaultText({ style: txtDefault })
 
-YellowBox.ignoreWarnings(['Warning'])
+YellowBox.ignoreWarnings(['Warning', 'Remote'])
 AppRegistry.registerComponent(appName, () => App)

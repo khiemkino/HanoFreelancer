@@ -69,7 +69,13 @@ PODS:
     - React
   - react-native-exif (0.4.0):
     - React
+  - react-native-geolocation (1.4.2):
+    - React
+  - react-native-image-metedata (1.0.2):
+    - React
   - react-native-image-picker (1.0.2):
+    - React
+  - react-native-image-resizer (1.0.1):
     - React
   - React-RCTActionSheet (0.60.4):
     - React-Core (= 0.60.4)
@@ -118,7 +124,10 @@ DEPENDENCIES:
   - react-native-camera (from `../node_modules/react-native-camera`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-exif (from `../node_modules/react-native-exif`)
+  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-image-metedata (from `../node_modules/react-native-image-metedata`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -167,8 +176,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-exif:
     :path: "../node_modules/react-native-exif"
+  react-native-geolocation:
+    :path: "../node_modules/@react-native-community/geolocation"
+  react-native-image-metedata:
+    :path: "../node_modules/react-native-image-metedata"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-image-resizer:
+    :path: "../node_modules/react-native-image-resizer"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -214,7 +229,10 @@ SPEC CHECKSUMS:
   react-native-camera: fd052e2a172d9f49d7427c7fa7b089da6d047a38
   react-native-cameraroll: 976d4c5c72f3d06f0725a6e2e956b183744ea00e
   react-native-exif: 376cd57ed8b5b71b385817cc671b1f7608dbfe8a
+  react-native-geolocation: a7b94614afbd5fd8350e0233a2025c8228fc8041
+  react-native-image-metedata: 09c4c91a2f112c9e3a46cbfc327a1450b589bb9c
   react-native-image-picker: 5c15ac0251475ae0b9f21e17d08d7c28db847abc
+  react-native-image-resizer: 48eb06a18a6d0a632ffa162a51ca61a68fb5322f
   React-RCTActionSheet: 9f71d7ae3e8fb10e08d162cbf14c621349dbfab3
   React-RCTAnimation: 981d8c95b0e30918a9832ccac32af83562a27fae
   React-RCTBlob: 21e73d1020a302a75fed30dbaee9f15287b80baa
